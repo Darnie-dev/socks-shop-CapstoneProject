@@ -58,4 +58,7 @@ jobs:
           kubectl apply -f alerting
           kubectl apply -f monitoring
           kubectl apply -f socks-shop
-          kubectl apply -f ingress         
+          kubectl apply -f ingress    
+          kubectl apply -f lets-encrypt
+          
+
