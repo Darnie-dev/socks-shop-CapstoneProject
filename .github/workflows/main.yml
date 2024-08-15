@@ -1,0 +1,61 @@
+name: Alt Capstone 
+run-name: ${{ github.actor }} pushed a commit to main
+on:
+  push:
+    branches:
+      - main
+
+env:
+  ARM_CLIENT_ID: "${{ secrets.TF_VAR_CLIENT_ID }}"
+  ARM_SUBSCRIPTION_ID: "${{ secrets.TF_VAR_SUBSCRIPTION_ID }}"
+  ARM_TENANT_ID: "${{ secrets.TF_VAR_TENANT_ID }}"
+  ARM_CLIENT_SECRET: "${{ secrets.TF_VAR_CLIENT_SECRET }}"
+
+
+jobs:
+  Capstone:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+
+      - name: Install Kubectl
+        run: |
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+      - name: Install Azure CLI
+        run: |
+          sudo apt-get install apt-transport-https ca-certificates curl gnupg lsb-release
+          sudo mkdir -p /etc/apt/keyrings
+          curl -sLS https://packages.microsoft.com/keys/microsoft.asc |
+            gpg --dearmor | sudo tee /etc/apt/keyrings/microsoft.gpg > /dev/null
+          sudo chmod go+r /etc/apt/keyrings/microsoft.gpg
+          AZ_DIST=$(lsb_release -cs)
+          echo "Types: deb
+          URIs: https://packages.microsoft.com/repos/azure-cli/
+          Suites: ${AZ_DIST}
+          Components: main
+          Architectures: $(dpkg --print-architecture)
+          Signed-by: /etc/apt/keyrings/microsoft.gpg" | sudo tee /etc/apt/sources.list.d/azure-cli.sources
+          sudo apt-get update
+          sudo apt-get install azure-cli
+
+      - name: Apply terraform
+        run: |
+          terraform init
+          terraform apply --auto-approve
+        working-directory: infra
+
+      - name: Apply Manifests to cluster
+        run: |
+          az login --service-principal -u ${{ secrets.TF_VAR_CLIENT_ID }} -p ${{ secrets.TF_VAR_CLIENT_SECRET }} --tenant ${{ secrets.TF_VAR_TENANT_ID }}
+          az aks get-credentials --name ay-capstone --resource-group alt-school-capstone
+          kubectl apply -f alerting
+          kubectl apply -f monitoring
+          kubectl apply -f socks-shop
+          kubectl apply -f ingress         
