@@ -1,7 +1,7 @@
 # AltSchool of Cloud Engineering Tinyuka 2023 Capstone Project
 
 ## Overview
-
+[project link](https://darnie-dev.me/)
 This project involves deploying the Socks Shop, a microservices-based application, on a Kubernetes cluster using Infrastructure as Code (IaaC) principles. The project aims to demonstrate the deployment of a modern cloud-native application with an emphasis on automation, monitoring, and security. The deployment was carried out on **Azure**, using **Terraform** for IaaC and **Helm** for managing Kubernetes resources.
 
 ## Table of Contents
@@ -52,7 +52,29 @@ Before you begin, ensure you have the following:
 - **Terraform** installed
 
 ## Project Structure
+1. Configure Azure CLI: set up Azure and configure the CLI with Azure Services
+[CLI instructions](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)
+
+2. Terraform Configuration:
+   Ensure you have inatalled on your local machine
+   -create a new directory for the terraform folder to have the configuration files and initiate the project
+```
+    mkdir Socks-Shop_Terraform
+    cd Socks-Shop_Terraform
+```
+3. Git clone this repository and navigate to the terraform folder to have the terraform configuration files and initiate the terraform project.
+   ```
+   git clone https://https://github.com/Darnie-dev/socks-shop-CapstoneProject/terraform
+   ```
+4. Run the following command to initialise terraform project:
+   ``` terraform init ```  
+
+5. Run the following command to create and execution plan:
+   ``` terraform plan ```
 
 
-The project directory is organized as follows:
+
+
+The project execution modes are as follows:
+
 
