@@ -45,20 +45,20 @@ jobs:
           sudo apt-get update
           sudo apt-get install azure-cli
 
-      - name: Apply terraform
-        run: |
-          terraform init
-          terraform apply --auto-approve
-        working-directory: infra
+      # - name: Apply terraform
+      #   run: |
+      #     terraform init
+      #     terraform apply --auto-approve
+      #   working-directory: infra
 
-      - name: Apply Manifests to cluster
-        run: |
-          az login --service-principal -u ${{ secrets.TF_VAR_CLIENT_ID }} -p ${{ secrets.TF_VAR_CLIENT_SECRET }} --tenant ${{ secrets.TF_VAR_TENANT_ID }}
-          az aks get-credentials --name ay-capstone --resource-group alt-school-capstone
-          kubectl apply -f alerting
-          kubectl apply -f monitoring
-          kubectl apply -f socks-shop
-          kubectl apply -f ingress    
-          kubectl apply -f lets-encrypt
+      # - name: Apply Manifests to cluster
+      #   run: |
+      #     az login --service-principal -u ${{ secrets.TF_VAR_CLIENT_ID }} -p ${{ secrets.TF_VAR_CLIENT_SECRET }} --tenant ${{ secrets.TF_VAR_TENANT_ID }}
+      #     az aks get-credentials --name ay-capstone --resource-group alt-school-capstone
+      #     kubectl apply -f alerting
+      #     kubectl apply -f monitoring
+      #     kubectl apply -f socks-shop
+      #     kubectl apply -f ingress    
+      #     kubectl apply -f lets-encrypt
           
 
